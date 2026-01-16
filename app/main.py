@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from app.core.settings import settings
-from app.core.routerLoader import loadRouters
+from app.routers import mainRouter
 
 def createApp() -> FastAPI:
     try:
@@ -10,7 +10,7 @@ def createApp() -> FastAPI:
             version=settings.appVersion
         )
 
-        loadRouters(app)
+        app.include_router(mainRouter)
         
         return app
     except Exception as e:

@@ -1,5 +1,8 @@
+pywin32==311
 pillow==12.1.0
-google-genai==1.56.0
+cx_Freeze == 8.5.3
+google-genai==1.59.0
+nvidia-ml-py==13.590.44
 pydantic-settings==2.12.0
 
 diffusers[torch]
