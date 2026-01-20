@@ -1,14 +1,13 @@
 import pynvml
 from contextlib import contextmanager
 
-def test():
-    print("gpuUtil test")
-
 @contextmanager
 def nvmlContext():
     pynvml.nvmlInit()
     try:
         yield
+    except Exception as e:
+        print(f"NVML Error: {e}")
     finally:
         pynvml.nvmlShutdown()
 
@@ -27,7 +26,7 @@ def getGpuStatus():
 
             gpuInfo = {
                 "index": i,
-                "name": pynvml.nvmlDeviceGetName(handle),
+                "name": name,
                 "total_memory": memInfo.total // (1024 ** 2),  # in MB
                 "used_memory": memInfo.used // (1024 ** 2),    # in MB
                 "free_memory": memInfo.free // (1024 ** 2),    # in MB

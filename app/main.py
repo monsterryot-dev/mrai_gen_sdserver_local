@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
-from app.core.settings import settings
 from app.routers import mainRouter
+from app.core.settings import settings
 
 def createApp() -> FastAPI:
     try:

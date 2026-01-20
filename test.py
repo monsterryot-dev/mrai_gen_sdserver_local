@@ -1,17 +1,15 @@
 import uvicorn
 
 from app.utils.serverConfig import getServerInfo
+from app.core.decorators.exception import serverStartContext
 
 if __name__ == "__main__":
-    try:
+    with serverStartContext():
         serverInfo = getServerInfo()
-        
+
         uvicorn.run(
-            "app.main:app",
+            serverInfo["app"],
             host=serverInfo["host"],
             port=serverInfo["port"],
             reload=serverInfo["reload"],
         )
-                
-    except Exception as e:
-        print(f"Error starting server: \n {e}")
