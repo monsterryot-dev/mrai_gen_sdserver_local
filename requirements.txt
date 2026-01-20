@@ -1,4 +1,4 @@
-pywin32==311
+pywin32==311 #windows only
 pillow==12.1.0
 cx_Freeze == 8.5.3
 google-genai==1.59.0
