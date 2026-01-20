@@ -1,3 +1,4 @@
+# TODO: CUDA 11.8 환경에서의 requirements 파일 정리 필요
 # CUDA 11.8용
 torch==2.1.0+cu118
 torchvision==0.16.0+cu118
