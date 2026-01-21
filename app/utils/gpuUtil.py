@@ -41,3 +41,18 @@ def getGpuStatus():
 def getGpuCount():
     with nvmlContext():
         return pynvml.nvmlDeviceGetCount()
+    
+def getDriverVersion():
+    with nvmlContext():
+        return pynvml.nvmlSystemGetDriverVersion()
+    
+def getCudaVersion(type="semantic"):
+    with nvmlContext():
+        cudaVersion = pynvml.nvmlSystemGetCudaDriverVersion()
+
+        if type == "semantic":
+            major = cudaVersion // 1000
+            minor = (cudaVersion % 1000) // 10
+            return f"{major}.{minor}"
+        else:
+            return cudaVersion
