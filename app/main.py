@@ -1,7 +1,10 @@
+"""
+FastAPI 애플리케이션 생성 및 설정
+"""
 from fastapi import FastAPI
 
-from app.routers import mainRouter
 from app.core.settings import settings
+from app.core.settingRouter import settingRouter
 
 def createApp() -> FastAPI:
     try:
@@ -10,7 +13,7 @@ def createApp() -> FastAPI:
             version=settings.appVersion
         )
 
-        app.include_router(mainRouter)
+        app = settingRouter(app)
         
         return app
     except Exception as e:

@@ -1,13 +1,23 @@
+"""
+라우터 로드 컨텍스트 매니저 데코레이터
+"""
 from contextlib import contextmanager
 
 @contextmanager
-def serverStartContext():
-    print("서버 시작 중...")
+def routerLoadContext(name:str):
+    print(f"라우터 '{name}' 로드 중...")
     try:
         yield
-    except KeyboardInterrupt:
-        print("서버 중지 요청 받음.")
     except Exception as e:
-        print(f"서버 오류: {e}")
+        print(f"라우터 '{name}' 로드 오류: {e}")
     finally:
-        print("서버 중지.")
+        print(f"라우터 '{name}' 로드 완료.")
+
+@contextmanager
+def routerContext():
+    try:
+        yield
+    except Exception as e:
+        print(f"라우터 컨텍스트 오류: {e}")
+    finally:
+        pass

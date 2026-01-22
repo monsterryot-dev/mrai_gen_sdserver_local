@@ -1,3 +1,4 @@
+# UNUSED: 현재 사용하지 않는 파일 
 import pynvml
 from contextlib import contextmanager
 
