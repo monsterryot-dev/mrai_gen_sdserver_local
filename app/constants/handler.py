@@ -5,3 +5,8 @@ handlerMessage = {
     404: "요청하신 리소스를 찾을 수 없습니다.",
     500: "서버 내부 오류가 발생했습니다."
 }
+
+validationMessage = {
+    "missing": "필수 입력 {key}이(가) 누락되었습니다.",
+    "value_error": "입력 받은 값 {key}이(가) 잘못된 값입니다. [사용 가능한 값: {allowed}]"
+}

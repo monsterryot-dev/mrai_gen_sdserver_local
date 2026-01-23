@@ -14,7 +14,7 @@ def routerLoadContext(name:str):
         print(f"라우터 '{name}' 로드 완료.")
 
 @contextmanager
-def routerContext():
+def endpointContext():
     try:
         yield
     except Exception as e:
