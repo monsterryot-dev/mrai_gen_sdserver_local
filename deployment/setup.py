@@ -7,7 +7,8 @@ SetupVersion = "1.2.0"
 SetupDescription = "MRAI SD Local Application"
 
 buildExeOptions = {
-    "excludes": ["tkinter"]
+    "include_files": [".env"],
+    "excludes": ["tkinter"],
 }
 
 setup(

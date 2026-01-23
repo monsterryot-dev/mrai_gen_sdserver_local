@@ -4,6 +4,7 @@ google imagen을 이용한 이미지 생성 라우터 모듈
 from fastapi import APIRouter, Depends
 
 from app.core.decorators.exception import endpointContext
+from app.services.google.imagen import GoogleImagenService
 
 from app.schemas.requests.google.imagen import ImagenRequestPost
 
@@ -14,6 +15,6 @@ async def generateImageFromText(
     request: ImagenRequestPost = Depends(ImagenRequestPost.asForm)
 ):
     with endpointContext():
-        print(f"Requested data: {request}")
-        return {"message": "텍스트로부터 이미지 생성 엔드포인트"}
+        serviceResult = GoogleImagenService.generateImageFromText(request)
+        return serviceResult
 

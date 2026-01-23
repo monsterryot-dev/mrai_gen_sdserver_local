@@ -19,5 +19,3 @@ def endpointContext():
         yield
     except Exception as e:
         print(f"라우터 컨텍스트 오류: {e}")
-    finally:
-        pass
