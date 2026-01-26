@@ -2,7 +2,6 @@
 Google API 클라이언트 서비스 모듈
 """
 import datetime
-from PIL import Image
 from typing import Any
 from google import genai
 
@@ -21,6 +20,23 @@ class GoogleApiClient:
     def setGoogleClient(self):
         self.client = genai.Client(api_key=self.apiKey)
         return self.client
+    
+    def getModelList(self):
+        client = self.setGoogleClient()
+        modelList = client.models.list()
+        return modelList
+    
+    def getCountToken(self, type:str, model:str, prompt:str):
+        if type == "imagen":
+            # 2026-01-26 기준
+            # imagen v4 모델은 토큰 카운팅 지원 안함
+            # gemini-2.0-flash를 이용하여 토큰 카운팅
+            client = self.setGoogleClient()
+            totalTokens = client.models.count_tokens(
+                model="models/gemini-2.0-flash",
+                contents=prompt
+            )
+            return totalTokens
     
     def getImageFormat(self, image):
         # Google genai API의 Image 객체인 경우
@@ -43,7 +59,6 @@ class GoogleApiClient:
         if idx is not None:
             return f"{prefix}_{timestamp}_{idx}.{format}"
         return f"{prefix}_{timestamp}.{format}"
-        
 
     def makeImage(self, requestBody: Any):
         # 자식 클래스에서 구현

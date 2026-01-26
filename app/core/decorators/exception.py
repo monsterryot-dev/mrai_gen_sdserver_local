@@ -17,6 +17,7 @@ def routerLoadContext(name:str):
         print(f"라우터 '{name}' 로드 완료.")
 
 def endpointContext(function):
+    """커스텀 엔드포인트 데코레이터"""
     @wraps(function)
     async def async_wrapper(*args, **kwargs):
         try:
@@ -27,6 +28,7 @@ def endpointContext(function):
                 code=200,
                 data=result
             ).setResponse()
+        
         except Exception as e:
             code = e.code if hasattr(e, 'code') else 500
             message = e.message if hasattr(e, 'message') else "Internal Server Error"

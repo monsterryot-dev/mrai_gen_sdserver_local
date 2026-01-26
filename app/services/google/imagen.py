@@ -9,6 +9,9 @@ from app.services.google.client import GoogleApiClient
 from app.schemas.requests.google.imagen import ImagenRequestPost
 
 class GoogleImagenService(GoogleApiClient):
+    def __init__(self):
+        super().__init__()
+        
     def makeImage(self, requestBody: ImagenRequestPost):
         client = self.setGoogleClient()
 
