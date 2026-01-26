@@ -11,10 +11,10 @@ from app.schemas.requests.google.imagen import ImagenRequestPost
 imagenRouter = APIRouter()
 
 @imagenRouter.post("/generate/txt")
+@endpointContext
 async def generateImageFromText(
     request: ImagenRequestPost = Depends(ImagenRequestPost.asForm)
 ):
-    with endpointContext():
-        serviceResult = GoogleImagenService.generateImageFromText(request)
-        return serviceResult
-
+    service = GoogleImagenService()
+    result = service.makeImage(request)
+    return result

@@ -11,8 +11,9 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="allow",
     )
-    
     appName: str = "mrai_gen_sdserver_local"
     appVersion: str = "1.2.0"
+
+    imageFilePath: str = os.path.join(os.getcwd(), "outputs")
 
 settings = Settings()
