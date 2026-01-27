@@ -1,6 +1,5 @@
 """
 Google API 클라이언트 서비스 모듈
-TODO: generate_images와 generate_content의 기능 확인 후 분리 여부 확인
 """
 import re
 import datetime
@@ -19,7 +18,7 @@ class GoogleApiClient:
         # 출력 디렉토리 생성
         checkAndCreateDir(self.filePath)
 
-    def setGoogleClient(self):
+    def setGoogleClient(self) -> genai.Client:
         self.client = genai.Client(api_key=self.apiKey)
         return self.client
     
@@ -27,7 +26,7 @@ class GoogleApiClient:
             self, 
             pattern:str = None, 
             ignoreCase:bool = True
-        ):
+        ) -> list[str]:
         # 패턴이 None이면 전체 모델 이름 리스트 반환
         # 예: imagen -> pattern = r"imagen"
         # 예: gemini 이미지 모델 -> pattern = r"^(?=.*gemini)(?=.*image).*$"
@@ -49,7 +48,7 @@ class GoogleApiClient:
             self, 
             model:str,
             contents: Optional[str|list]
-        ):
+        ) -> dict[str, int]:
         if self.client is None:
             self.setGoogleClient()
 
@@ -64,7 +63,7 @@ class GoogleApiClient:
             'cachedContentTokenCount': tokenDict.get('cached_content_token_count', 0),
         }
             
-    def getImageFormat(self, image):
+    def getImageFormat(self, image) -> str:
         # Google genai API의 Image 객체인 경우
         if hasattr(image, 'mime_type'):
             return image.mime_type.split('/')[-1]
@@ -81,7 +80,7 @@ class GoogleApiClient:
             idx: int = None, 
             prefix: str = "google_image", 
             format: str = "png"
-        ):
+        ) -> str:
         now = datetime.datetime.now()
         timestamp = now.strftime("%Y%m%d_%H%M%S")
 

@@ -12,7 +12,10 @@ class GoogleTxt2ImgService(GoogleApiClient):
     def __init__(self):
         super().__init__()
 
-    def makeImage(self, requestBody: TextToImageRequestPost):
+    def makeImage(
+            self, 
+            requestBody: TextToImageRequestPost
+        ) -> dict[str, list[str]]:
         if self.client is None:
             self.setGoogleClient()
 
@@ -28,7 +31,10 @@ class GoogleTxt2ImgService(GoogleApiClient):
 
         return {"imageList": images}
     
-    def setParams(self, requestBody: TextToImageRequestPost):
+    def setParams(
+            self, 
+            requestBody: TextToImageRequestPost
+        ) -> dict[str, any]:
         model = requestBody.model
 
         # INFO: 현재는 Imagen v4를 지원하지 않아서 gemini-2.0-flash 모델로 계산함
@@ -56,7 +62,11 @@ class GoogleTxt2ImgService(GoogleApiClient):
             "config": config,
         }
     
-    def saveImage(self, images: list[Image.Image], fileNamePrefix: str = "generated_imagen"):
+    def saveImage(
+            self, 
+            images: list[Image.Image], 
+            fileNamePrefix: str = "generated_imagen"
+        ) -> list[str]:
         savedImagePaths = []
         for idx, imageData in enumerate(images):
             if not isinstance(imageData, Image.Image):
