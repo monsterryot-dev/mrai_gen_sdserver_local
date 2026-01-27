@@ -31,7 +31,6 @@ class GoogleTxt2ImgService(GoogleApiClient):
     def setParams(self, requestBody: TextToImageRequestPost):
         model = requestBody.model
 
-        # TODO: 프롬프트 수를 확인 할 예정
         # INFO: 현재는 Imagen v4를 지원하지 않아서 gemini-2.0-flash 모델로 계산함
         prompt = requestBody.prompt
         tokenInfo = self.getCountToken(

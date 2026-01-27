@@ -1,5 +1,6 @@
 """
 Google API 클라이언트 서비스 모듈
+TODO: generate_images와 generate_content의 기능 확인 후 분리 여부 확인
 """
 import re
 import datetime
