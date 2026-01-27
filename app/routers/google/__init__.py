@@ -3,16 +3,10 @@ from fastapi import APIRouter
 googleRouter = APIRouter()
 
 # 하위 라우터 등록
-from app.routers.google.imagen import imagenRouter
-from app.routers.google.nanoBanana import nanoBananaRouter
+from app.routers.google.generate import generateRouter
 
 googleRouter.include_router(
-    imagenRouter, 
-    prefix="/imagen", 
-    tags=["imagen"]
-)
-googleRouter.include_router(
-    nanoBananaRouter, 
-    prefix="/nanoBanana", 
-    tags=["nanoBanana"]
+    generateRouter, 
+    prefix="/generate", 
+    tags=["generate"]
 )

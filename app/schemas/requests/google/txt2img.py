@@ -1,4 +1,3 @@
-# TODO: validation 로직 수정 및 정리 필요
 from fastapi import Form
 from typing import get_args
 from pydantic import BaseModel, Field, field_validator
@@ -6,7 +5,7 @@ from pydantic import BaseModel, Field, field_validator
 from app.constants.model import GoogleImagenModels
 from app.constants.google import IMAGESIZE, OUTPUTMIMETYPE, ASPECTRATIO, PERSONGENERATION
 
-class ImagenRequestBasic(BaseModel):
+class TextToImageRequestBasic(BaseModel):
     model:GoogleImagenModels = Field(
         ...,
         title="Imagen 모델명",
@@ -86,7 +85,7 @@ class ImagenRequestBasic(BaseModel):
             f"{validSizes}"
         )
 
-class ImagenTextRequestPost(ImagenRequestBasic):
+class TextToImageRequestPost(TextToImageRequestBasic):
     @classmethod
     def asForm(
         cls,

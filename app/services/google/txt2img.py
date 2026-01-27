@@ -1,18 +1,18 @@
 """
-google imagen 서비스를 이용한 이미지 생성 서비스 모듈
+google 서비스를 이용한 이미지 생성 서비스 모듈
 """
 import os
 from PIL import Image
 from google.genai import types
 
 from app.services.google.client import GoogleApiClient
-from app.schemas.requests.google.imagen import ImagenTextRequestPost
+from app.schemas.requests.google.txt2img import TextToImageRequestPost
 
-class GoogleImagenTextService(GoogleApiClient):
+class GoogleTxt2ImgService(GoogleApiClient):
     def __init__(self):
         super().__init__()
 
-    def makeImage(self, requestBody: ImagenTextRequestPost):
+    def makeImage(self, requestBody: TextToImageRequestPost):
         if self.client is None:
             self.setGoogleClient()
 
@@ -28,7 +28,7 @@ class GoogleImagenTextService(GoogleApiClient):
 
         return {"imageList": images}
     
-    def setParams(self, requestBody: ImagenTextRequestPost):
+    def setParams(self, requestBody: TextToImageRequestPost):
         model = requestBody.model
 
         # TODO: 프롬프트 수를 확인 할 예정
