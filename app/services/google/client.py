@@ -1,6 +1,7 @@
 """
 Google API 클라이언트 서비스 모듈
 """
+import re
 import datetime
 from typing import Any
 from google import genai
@@ -17,15 +18,35 @@ class GoogleApiClient:
         # 출력 디렉토리 생성
         checkAndCreateDir(self.filePath)
 
-    def setGoogleClient(self):
-        self.client = genai.Client(api_key=self.apiKey)
-        return self.client
-    
     def getModelList(self):
         client = self.setGoogleClient()
         modelList = client.models.list()
         return modelList
+
+    def setGoogleClient(self):
+        self.client = genai.Client(api_key=self.apiKey)
+        return self.client
     
+    def getModelList(self, pattern:str = None):
+        # 패턴이 None이면 전체 모델 리스트 반환
+        # imagen pattern = r"imagen"
+        # gemini pattern = r"^(?=.*gemini)(?=.*image).*$"
+        returnList = []
+        client = self.setGoogleClient()
+        modelList = client.models.list()
+
+        for infoText in modelList:
+            info = infoText.__dict__
+            target = info.get('name', '')
+
+            if pattern is None:
+                returnList.append(target)
+            else:
+                if re.search(pattern, target):
+                    returnList.append(target)
+            
+        return returnList
+        
     def getCountToken(self, type:str, model:str, prompt:str):
         if type == "imagen":
             # 2026-01-26 기준
