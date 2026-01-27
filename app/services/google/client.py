@@ -3,8 +3,8 @@ Google API 클라이언트 서비스 모듈
 """
 import re
 import datetime
-from typing import Any
 from google import genai
+from typing import Any, Optional
 
 from app.core.settings import settings
 from app.utils.file import checkAndCreateDir
@@ -18,47 +18,51 @@ class GoogleApiClient:
         # 출력 디렉토리 생성
         checkAndCreateDir(self.filePath)
 
-    def getModelList(self):
-        client = self.setGoogleClient()
-        modelList = client.models.list()
-        return modelList
-
     def setGoogleClient(self):
         self.client = genai.Client(api_key=self.apiKey)
         return self.client
     
-    def getModelList(self, pattern:str = None):
-        # 패턴이 None이면 전체 모델 리스트 반환
-        # imagen pattern = r"imagen"
-        # gemini pattern = r"^(?=.*gemini)(?=.*image).*$"
-        returnList = []
-        client = self.setGoogleClient()
-        modelList = client.models.list()
+    def getModelList(
+            self, 
+            pattern:str = None, 
+            ignoreCase:bool = True
+        ):
+        # 패턴이 None이면 전체 모델 이름 리스트 반환
+        # 예: imagen -> pattern = r"imagen"
+        # 예: gemini 이미지 모델 -> pattern = r"^(?=.*gemini)(?=.*image).*$"
+        if self.client is None:
+            self.setGoogleClient()
 
-        for infoText in modelList:
-            info = infoText.__dict__
-            target = info.get('name', '')
+        modelList = self.client.models.list()
+        names = [getattr(m, "name", "") for m in modelList]
 
-            if pattern is None:
-                returnList.append(target)
-            else:
-                if re.search(pattern, target):
-                    returnList.append(target)
-            
-        return returnList
+        if not pattern:
+            return names
+
+        flags = re.IGNORECASE if ignoreCase else 0
+        regex = re.compile(pattern, flags)
+
+        return [name for name in names if regex.search(name)]
         
-    def getCountToken(self, type:str, model:str, prompt:str):
-        if type == "imagen":
-            # 2026-01-26 기준
-            # imagen v4 모델은 토큰 카운팅 지원 안함
-            # gemini-2.0-flash를 이용하여 토큰 카운팅
-            client = self.setGoogleClient()
-            totalTokens = client.models.count_tokens(
-                model="models/gemini-2.0-flash",
-                contents=prompt
-            )
-            return totalTokens
-    
+    def getCountToken(
+            self, 
+            model:str,
+            contents: Optional[str|list]
+        ):
+        if self.client is None:
+            self.setGoogleClient()
+
+        tokenClass = self.client.models.count_tokens(
+            model=model,
+            contents=contents
+        )
+        tokenDict = tokenClass.__dict__
+
+        return {
+            'totalToken': tokenDict.get('total_tokens', 0),
+            'cachedContentTokenCount': tokenDict.get('cached_content_token_count', 0),
+        }
+            
     def getImageFormat(self, image):
         # Google genai API의 Image 객체인 경우
         if hasattr(image, 'mime_type'):
@@ -71,7 +75,12 @@ class GoogleApiClient:
         # 기본값
         return "png"
 
-    def setFileName(self, prefix: str = "google_image", idx: int = None, format: str = "png"):
+    def setFileName(
+            self, 
+            idx: int = None, 
+            prefix: str = "google_image", 
+            format: str = "png"
+        ):
         now = datetime.datetime.now()
         timestamp = now.strftime("%Y%m%d_%H%M%S")
 
@@ -79,6 +88,7 @@ class GoogleApiClient:
 
         if idx is not None:
             return f"{prefix}_{timestamp}_{idx}.{format}"
+        
         return f"{prefix}_{timestamp}.{format}"
 
     def makeImage(self, requestBody: Any):

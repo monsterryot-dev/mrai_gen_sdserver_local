@@ -86,7 +86,7 @@ class ImagenRequestBasic(BaseModel):
             f"{validSizes}"
         )
 
-class ImagenRequestPost(ImagenRequestBasic):
+class ImagenTextRequestPost(ImagenRequestBasic):
     @classmethod
     def asForm(
         cls,

@@ -6,18 +6,19 @@ from PIL import Image
 from google.genai import types
 
 from app.services.google.client import GoogleApiClient
-from app.schemas.requests.google.imagen import ImagenRequestPost
+from app.schemas.requests.google.imagen import ImagenTextRequestPost
 
-class GoogleImagenService(GoogleApiClient):
+class GoogleImagenTextService(GoogleApiClient):
     def __init__(self):
         super().__init__()
-        
-    def makeImage(self, requestBody: ImagenRequestPost):
-        client = self.setGoogleClient()
+
+    def makeImage(self, requestBody: ImagenTextRequestPost):
+        if self.client is None:
+            self.setGoogleClient()
 
         params = self.setParams(requestBody)
 
-        clientResponse = client.models.generate_images(
+        clientResponse = self.client.models.generate_images(
             model=params["model"],
             prompt=params["prompt"],
             config=params["config"],
@@ -27,10 +28,19 @@ class GoogleImagenService(GoogleApiClient):
 
         return {"imageList": images}
     
-    def setParams(self, requestBody: ImagenRequestPost):
+    def setParams(self, requestBody: ImagenTextRequestPost):
         model = requestBody.model
 
+        # TODO: 프롬프트 수를 확인 할 예정
+        # INFO: 현재는 Imagen v4를 지원하지 않아서 gemini-2.0-flash 모델로 계산함
         prompt = requestBody.prompt
+        tokenInfo = self.getCountToken(
+            model="models/gemini-2.0-flash",
+            contents=prompt
+        )
+
+        if int(tokenInfo['totalToken']) > 480:
+            raise Exception("프롬프트가 너무 깁니다. 480 토큰 이하로 줄여주세요.")
 
         config = types.GenerateImagesConfig(
             number_of_images=requestBody.numberOfImages,

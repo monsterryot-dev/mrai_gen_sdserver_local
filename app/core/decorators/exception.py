@@ -30,6 +30,7 @@ def endpointContext(function):
             ).setResponse()
         
         except Exception as e:
+            print(f'엔드 포인트 에러: {e}')
             code = e.code if hasattr(e, 'code') else 500
             message = e.message if hasattr(e, 'message') else "Internal Server Error"
 
