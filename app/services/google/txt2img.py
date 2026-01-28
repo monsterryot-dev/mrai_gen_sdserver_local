@@ -1,5 +1,6 @@
 """
 google 서비스를 이용한 이미지 생성 서비스 모듈
+TODO: google class uml 나머지 정리 및 문서화 후 노션에 추가
 """
 import os
 from PIL import Image

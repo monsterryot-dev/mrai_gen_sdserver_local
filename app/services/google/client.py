@@ -11,16 +11,15 @@ from app.utils.file import checkAndCreateDir
 
 class GoogleApiClient:
     def __init__(self):
+        self.__apiKey: str = settings.googleapikey
         self.client: genai.Client = None
-        self.apiKey: str = settings.googleapikey
         self.filePath: str = settings.imageFilePath
 
         # 출력 디렉토리 생성
         checkAndCreateDir(self.filePath)
 
-    def setGoogleClient(self) -> genai.Client:
-        self.client = genai.Client(api_key=self.apiKey)
-        return self.client
+    def __setGoogleClient(self) -> genai.Client:
+        self.client = genai.Client(api_key=self.__apiKey)
     
     def getModelList(
             self, 
@@ -31,7 +30,7 @@ class GoogleApiClient:
         # 예: imagen -> pattern = r"imagen"
         # 예: gemini 이미지 모델 -> pattern = r"^(?=.*gemini)(?=.*image).*$"
         if self.client is None:
-            self.setGoogleClient()
+            self.__setGoogleClient()
 
         modelList = self.client.models.list()
         names = [getattr(m, "name", "") for m in modelList]
@@ -50,7 +49,7 @@ class GoogleApiClient:
             contents: Optional[str|list]
         ) -> dict[str, int]:
         if self.client is None:
-            self.setGoogleClient()
+            self.__setGoogleClient()
 
         tokenClass = self.client.models.count_tokens(
             model=model,
@@ -63,7 +62,7 @@ class GoogleApiClient:
             'cachedContentTokenCount': tokenDict.get('cached_content_token_count', 0),
         }
             
-    def getImageFormat(self, image) -> str:
+    def getImageFormat(self, image: Any) -> str:
         # Google genai API의 Image 객체인 경우
         if hasattr(image, 'mime_type'):
             return image.mime_type.split('/')[-1]

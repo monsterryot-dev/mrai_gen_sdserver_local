@@ -48,7 +48,7 @@ class TextToImageRequestBasic(BaseModel):
         ge=1.0,
         le=20.0,
         title="가이던스 스케일",
-        description="이미지 생성 시 가이던스 스케일 값 (범위: 1.0~20.0)",
+        description="이미지 생성 시 가이던스 스케일 값 (범위: 1.0~30.0)",
     )
 
     @field_validator("model", mode="before")
