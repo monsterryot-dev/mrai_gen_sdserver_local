@@ -13,7 +13,12 @@ class Settings(BaseSettings):
     )
     appName: str = "mrai_gen_sdserver_local"
     appVersion: str = "1.2.0"
+    # BUILD: 실제 배포 시에는 False로 변경 필요
+    debug: bool = True
+    logFormat: str = "[%(asctime)s] %(levelname)s: %(message)s"
 
+    basicPath: str = os.getcwd()
+    logFilePath: str = os.path.join(os.getcwd(), "logs")
     imageFilePath: str = os.path.join(os.getcwd(), "outputs")
 
 settings = Settings()

@@ -1,6 +1,7 @@
 """
 Uvicorn을 사용하여 FastAPI 서버 시작
 개발자 모드에서 사용하세요
+server.json 설정 파일을 기반으로 서버를 시작합니다.
 """
 import uvicorn
 

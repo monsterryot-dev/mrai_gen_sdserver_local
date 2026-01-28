@@ -1,4 +1,5 @@
 # TODO: CX FREEZE를 더 살펴보고 GPU와 관련된 라이브러리 다운로드 적용 시점 설정 예정
+# BUILD: server.json 파일이 reload false인지 확인 및 변경 필요
 from cx_Freeze import setup, Executable
 
 # 상수 설정

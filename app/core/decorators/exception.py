@@ -4,17 +4,18 @@
 from functools import wraps
 from contextlib import contextmanager
 
+from app.core.logger import logger
 from app.schemas.responses.endpoint import EndpointResponse
 
 @contextmanager
 def routerLoadContext(name:str):
-    print(f"라우터 '{name}' 로드 중...")
+    logger.writeLog(level="info", message=f"라우터 '{name}' 로드 중...")
     try:
         yield
     except Exception as e:
-        print(f"라우터 '{name}' 로드 오류: {e}")
+        logger.writeLog(level="error", message=f"라우터 '{name}' 로드 오류: {e}")
     finally:
-        print(f"라우터 '{name}' 로드 완료.")
+        logger.writeLog(level="info", message=f"라우터 '{name}' 로드 완료.")
 
 def endpointContext(function):
     """커스텀 엔드포인트 데코레이터"""
@@ -22,7 +23,7 @@ def endpointContext(function):
     async def async_wrapper(*args, **kwargs):
         try:
             result = await function(*args, **kwargs)
-            
+            logger.writeLog(level="info", message=f"엔드포인트 실행 성공: {function.__name__}")
             return EndpointResponse(
                 result=True,
                 code=200,
@@ -30,7 +31,7 @@ def endpointContext(function):
             ).setResponse()
         
         except Exception as e:
-            print(f'엔드 포인트 에러: {e}')
+            logger.writeLog(level="error", message=f'엔드포인트 에러: {e}')
             code = e.code if hasattr(e, 'code') else 500
             message = e.message if hasattr(e, 'message') else "Internal Server Error"
 
