@@ -18,3 +18,8 @@ async def generateTextToImage(
     service = GoogleTxt2ImgService()
     result = service.makeImage(request)
     return result
+
+@generateRouter.post("img")
+@endpointContext
+async def generateImageToImage():
+    pass

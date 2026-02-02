@@ -8,8 +8,12 @@ SetupVersion = "1.2.0"
 SetupDescription = "MRAI SD Local Application"
 
 buildExeOptions = {
-    "include_files": [".env"],
-    "excludes": ["tkinter"],
+    "packages": ["os", "pymongo", "motor"],
+    "include_files": [
+        ".env",
+        ()
+    ],
+    "excludes": ["tkinter", "unittest"],
 }
 
 setup(

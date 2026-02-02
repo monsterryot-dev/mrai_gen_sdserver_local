@@ -2,6 +2,7 @@
 FastAPI 애플리케이션 설정 정보
 """
 import os
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -18,7 +19,8 @@ class Settings(BaseSettings):
     logFormat: str = "[%(asctime)s] %(levelname)s: %(message)s"
 
     basicPath: str = os.getcwd()
+    homePath: str = str(Path.home())
     logFilePath: str = os.path.join(os.getcwd(), "logs")
-    imageFilePath: str = os.path.join(os.getcwd(), "outputs")
+    imageFilePath: str = os.path.join(homePath, "Documents", "MRAI Desktop", "output")
 
 settings = Settings()
