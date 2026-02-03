@@ -5,8 +5,10 @@ from fastapi import APIRouter, Depends
 
 from app.core.decorators.exception import endpointContext
 from app.services.google.txt2img import GoogleTxt2ImgService
+from app.services.google.img2img import GoogleImg2ImgService
 
 from app.schemas.requests.google.txt2img import TextToImageRequestPost
+from app.schemas.requests.google.img2img import ImageToImageRequestPost
 
 generateRouter = APIRouter()
 
@@ -19,7 +21,12 @@ async def generateTextToImage(
     result = service.makeImage(request)
     return result
 
-@generateRouter.post("img")
+@generateRouter.post("/img")
 @endpointContext
-async def generateImageToImage():
-    pass
+async def generateImageToImage(
+    request: ImageToImageRequestPost = Depends(ImageToImageRequestPost.asForm),
+    image: bytes = Depends(ImageToImageRequestPost.asFile)
+):  
+    service = GoogleImg2ImgService(image)
+    result = service.makeImage(request)
+    return result

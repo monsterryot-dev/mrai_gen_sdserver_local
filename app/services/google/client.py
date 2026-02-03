@@ -30,7 +30,7 @@ class GoogleApiClient:
         except Exception as e:
             raise Exception(f"Google API 클라이언트 생성 실패: {str(e)}")
     
-    def checkGoogleClient(self) -> bool:
+    def checkGoogleClient(self) -> None:
         if self.client is None:
             self.__setGoogleClient()
     
@@ -74,6 +74,10 @@ class GoogleApiClient:
             'totalToken': tokenDict.get('total_tokens', 0),
             'cachedContentTokenCount': tokenDict.get('cached_content_token_count', 0),
         }
+    
+    def getModelMaxToken():
+        # TODO: 모델별 최대 토큰 수 반환 함수 구현
+        pass
             
     def getImageFormat(self, image: Any) -> str:
         # Google genai API의 Image 객체인 경우
