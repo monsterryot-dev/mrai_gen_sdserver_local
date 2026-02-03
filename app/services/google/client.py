@@ -4,6 +4,7 @@ Google API 클라이언트 서비스 모듈
 import re
 import datetime
 from google import genai
+from google.genai import types
 from typing import Any, Optional
 
 from app.core.settings import settings
@@ -19,7 +20,19 @@ class GoogleApiClient:
         checkAndCreateDir(self.filePath)
 
     def __setGoogleClient(self) -> genai.Client:
-        self.client = genai.Client(api_key=self.__apiKey)
+        try:
+            self.client = genai.Client(
+                api_key=self.__apiKey,
+                http_options=types.HttpOptions(
+                    timeout=settings.googleTimeout
+                )
+            )
+        except Exception as e:
+            raise Exception(f"Google API 클라이언트 생성 실패: {str(e)}")
+    
+    def checkGoogleClient(self) -> bool:
+        if self.client is None:
+            self.__setGoogleClient()
     
     def getModelList(
             self, 

@@ -36,7 +36,7 @@ class TextToImageRequestBasic(BaseModel):
     aspectRatio:ASPECTRATIO = Field(
         "1:1",
         title="이미지 가로세로 비율",
-        description="생성할 이미지의 가로세로 비율 (가능한 값: 1:1, 16:9, 9:16)",
+        description="생성할 이미지의 가로세로 비율 (가능한 값: 1:1, 3:4, 4:3, 16:9, 9:16)",
     )
     personGeneration:PERSONGENERATION = Field(
         "allow_adult",
@@ -50,6 +50,11 @@ class TextToImageRequestBasic(BaseModel):
         title="가이던스 스케일",
         description="이미지 생성 시 가이던스 스케일 값 (범위: 1.0~30.0)",
     )
+    # INFO: 추가 가능한 옵션들
+    # http_options 
+    # include_safety_attributes 
+    # include_rai_reason
+    # output_compression_quality = 75 [기본값]
 
     @field_validator("model", mode="before")
     @classmethod

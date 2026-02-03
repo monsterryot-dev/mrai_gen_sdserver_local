@@ -17,8 +17,7 @@ class GoogleTxt2ImgService(GoogleApiClient):
             self, 
             requestBody: TextToImageRequestPost
         ) -> dict[str, list[str]]:
-        if self.client is None:
-            self.setGoogleClient()
+        self.checkGoogleClient()
 
         params = self.setParams(requestBody)
 
