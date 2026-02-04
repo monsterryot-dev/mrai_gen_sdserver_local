@@ -4,11 +4,14 @@ Google API 클라이언트 서비스 모듈
 import re
 import datetime
 from google import genai
+from fastapi import UploadFile
 from google.genai import types
 from typing import Any, Optional
 
 from app.core.settings import settings
 from app.utils.file import checkAndCreateDir
+
+from app.constants.google import DEFAULTPREFIX, DEFAULTFORMAT
 
 class GoogleApiClient:
     def __init__(self):
@@ -75,9 +78,13 @@ class GoogleApiClient:
             'cachedContentTokenCount': tokenDict.get('cached_content_token_count', 0),
         }
     
-    def getModelMaxToken():
-        # TODO: 모델별 최대 토큰 수 반환 함수 구현
-        pass
+    def getModelMaxToken(self, model:str) -> int:
+        modelInfo = self.client.models.get(model=model)
+
+        return {
+            'inputTokenLimit': modelInfo.input_token_limit,
+            'outputTokenLimit': modelInfo.output_token_limit
+        }
             
     def getImageFormat(self, image: Any) -> str:
         # Google genai API의 Image 객체인 경우
@@ -94,8 +101,8 @@ class GoogleApiClient:
     def setFileName(
             self, 
             idx: int = None, 
-            prefix: str = "google_image", 
-            format: str = "png"
+            prefix: str = DEFAULTPREFIX, 
+            format: str = DEFAULTFORMAT
         ) -> str:
         now = datetime.datetime.now()
         timestamp = now.strftime("%Y%m%d_%H%M%S")
@@ -106,6 +113,14 @@ class GoogleApiClient:
             return f"{prefix}_{timestamp}_{idx}.{format}"
         
         return f"{prefix}_{timestamp}.{format}"
+    
+    def loadImage(self, image: UploadFile)->types.Part:
+        imageData = image.file.read()
+        imagePart = types.Part.from_bytes(
+            data=imageData,
+            mime_type=image.content_type
+        )
+        return imagePart
 
     def makeImage(self, requestBody: Any):
         # 자식 클래스에서 구현
@@ -115,6 +130,10 @@ class GoogleApiClient:
         # 자식 클래스에서 구현
         pass
     
-    def saveImage(self, images: Any):
+    def setImageResult(self, response: Any):
+        # 자식 클래스에서 구현
+        pass
+
+    def saveImage(self, image: Any, fileNamePrefix: str):
         # 자식 클래스에서 구현
         pass

@@ -1,9 +1,9 @@
 from typing import get_args
-from fastapi import Form, File
+from fastapi import Form, File, UploadFile
 from pydantic import BaseModel, Field, field_validator
 
 from app.constants.model import GoogleNanoBananaModels
-from app.constants.google import CONTENTIMAGESIZE
+from app.constants.google import CONTENTIMAGESIZE, CONTENTASPECTRATIO
 
 class ImageToImageRequestBasie(BaseModel):
     model:GoogleNanoBananaModels = Field(
@@ -41,6 +41,11 @@ class ImageToImageRequestBasie(BaseModel):
         le=2**32 - 1,
         title="랜덤 시드 값",
         description="이미지 생성 시 사용할 랜덤 시드 값 (0~4294967295 사이의 정수, None일 경우 무작위 시드 사용)",
+    )
+    aspectRatio:CONTENTASPECTRATIO = Field(
+        "1:1",
+        title="이미지 가로세로 비율",
+        description="생성할 이미지의 가로세로 비율 (가능한 값: 1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9)",
     )
     imageSize:CONTENTIMAGESIZE = Field(
         "1k",
@@ -102,6 +107,7 @@ class ImageToImageRequestPost(ImageToImageRequestBasie):
         temperature:float = Form(1.0, ge=0.0, le=1.0),
         candidateCount:int = Form(1, ge=1, le=4),
         seed:int | None = Form(None, ge=0, le=2**32 - 1),
+        aspectRatio:str = Form("1:1"),
         imageSize:str = Form("1k"),
     ):
         return cls(
@@ -110,12 +116,13 @@ class ImageToImageRequestPost(ImageToImageRequestBasie):
             temperature=temperature,
             candidateCount=candidateCount,
             seed=seed,
+            aspectRatio=aspectRatio,
             imageSize=imageSize,
         )
 
     @classmethod
     def asFile(
         cls,
-        image:bytes = File(...),
+        image: UploadFile = File(...),
     ):
         return image

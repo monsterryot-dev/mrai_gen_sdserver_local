@@ -10,4 +10,3 @@ class GoogleImagenModels(str, Enum):
 class GoogleNanoBananaModels(str, Enum):
     NANO_BANANA = "gemini-2.5-flash-image"
     NANO_BANANA_PRO = "gemini-3-pro-image-preview"
-    NANO_BANANA_EXP = "gemini-2.0-flash-exp-image-generation"

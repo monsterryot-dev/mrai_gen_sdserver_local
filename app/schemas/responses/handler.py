@@ -24,10 +24,11 @@ class ExceptionHandlerResponse:
         content = {
             "result": self.result,
             "code": self.code,
-            "message": message
+            "data": {
+                "message": message if not self.errors else self._formatErrors(message)
+            }
         }
-        if self.errors:
-            content["message"] = self._formatErrors(message)
+        
         return JSONResponse(
             status_code=self.code, 
             content=content

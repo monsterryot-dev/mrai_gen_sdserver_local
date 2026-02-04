@@ -9,6 +9,8 @@ from google.genai import types
 from app.services.google.client import GoogleApiClient
 from app.schemas.requests.google.txt2img import TextToImageRequestPost
 
+from app.constants.google import DEFAULTSAFEERRORMESSAGE, IMAGENTOKENFINDMODEL, IMAGENINPUTTOKENLIMIT, IMAGENNAMEPREFIX
+
 class GoogleTxt2ImgService(GoogleApiClient):
     def __init__(self):
         super().__init__()
@@ -27,9 +29,9 @@ class GoogleTxt2ImgService(GoogleApiClient):
             config=params["config"],
         )
 
-        images = self.saveImage(clientResponse.generated_images, 'generated_imagen')
+        result = self.setImageResult(clientResponse, IMAGENNAMEPREFIX)
 
-        return {"imageList": images}
+        return result
     
     def setParams(
             self, 
@@ -40,12 +42,12 @@ class GoogleTxt2ImgService(GoogleApiClient):
         # INFO: 현재는 Imagen v4를 지원하지 않아서 gemini-2.0-flash 모델로 계산함
         prompt = requestBody.prompt
         tokenInfo = self.getCountToken(
-            model="models/gemini-2.0-flash",
+            model=IMAGENTOKENFINDMODEL,
             contents=prompt
         )
 
-        if int(tokenInfo['totalToken']) > 480:
-            raise Exception("프롬프트가 너무 깁니다. 480 토큰 이하로 줄여주세요.")
+        if int(tokenInfo['totalToken']) > IMAGENINPUTTOKENLIMIT:
+            raise Exception(f"프롬프트가 너무 깁니다. {IMAGENINPUTTOKENLIMIT} 토큰 이하로 줄여주세요.")
 
         config = types.GenerateImagesConfig(
             number_of_images=requestBody.numberOfImages,
@@ -62,20 +64,40 @@ class GoogleTxt2ImgService(GoogleApiClient):
             "config": config,
         }
     
+    def setImageResult(
+            self, 
+            response: types.GenerateImagesResponse, 
+            fileNamePrefix: str = IMAGENNAMEPREFIX
+        ) -> list[str]:
+        
+        if not response.generated_images:
+            return {
+                "imageList": [], 
+                "message": DEFAULTSAFEERRORMESSAGE
+            }
+
+        images = response.generated_images
+
+        imageList = self.saveImage(images, fileNamePrefix)
+
+        return {
+            "imageList": imageList
+        }
+
     def saveImage(
             self, 
             images: list[Image.Image], 
-            fileNamePrefix: str = "generated_imagen"
-        ) -> list[str]:
-        savedImagePaths = []
-        for idx, imageData in enumerate(images):
-            if not isinstance(imageData, Image.Image):
-                imageData = imageData.image
+            fileNamePrefix: str = IMAGENNAMEPREFIX
+        ) -> dict[str, list[str]]: 
+            saveImagePath = []
+            for idx, imageData in enumerate(images):
+                if not isinstance(imageData, Image.Image):
+                    imageData = imageData.image
 
-            format = self.getImageFormat(imageData)
-            fileName = self.setFileName(prefix=fileNamePrefix, idx=idx, format=format)
-            filePath = os.path.join(self.filePath, fileName)
+                format = self.getImageFormat(imageData)
+                fileName = self.setFileName(prefix=fileNamePrefix, idx=idx, format=format)
+                filePath = os.path.join(self.filePath, fileName)
 
-            imageData.save(filePath)
-            savedImagePaths.append(filePath)
-        return savedImagePaths
+                imageData.save(filePath)
+                saveImagePath.append(filePath)
+            return saveImagePath
