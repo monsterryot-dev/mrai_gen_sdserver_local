@@ -7,15 +7,17 @@ from contextlib import contextmanager
 from app.core.logger import logger
 from app.schemas.responses.endpoint import EndpointResponse
 
+from app.constants.messages import routerLoadMessage, endpointMessage
+
 @contextmanager
 def routerLoadContext(name:str):
-    logger.writeLog(level="info", message=f"라우터 '{name}' 로드 중...")
+    logger.writeLog(level="info", message=routerLoadMessage["start"].format(name=name))
     try:
         yield
     except Exception as e:
-        logger.writeLog(level="error", message=f"라우터 '{name}' 로드 오류: {e}")
+        logger.writeLog(level="error", message=routerLoadMessage["error"].format(name=name, error=e))
     finally:
-        logger.writeLog(level="info", message=f"라우터 '{name}' 로드 완료.")
+        logger.writeLog(level="info", message=routerLoadMessage["complete"].format(name=name))
 
 def endpointContext(function):
     """커스텀 엔드포인트 데코레이터"""
@@ -23,7 +25,7 @@ def endpointContext(function):
     async def async_wrapper(*args, **kwargs):
         try:
             result = await function(*args, **kwargs)
-            logger.writeLog(level="info", message=f"엔드포인트 실행 성공: {function.__name__}")
+            logger.writeLog(level="info", message=endpointMessage["success"].format(function=function.__name__))
             return EndpointResponse(
                 result=True,
                 code=200,
@@ -31,7 +33,7 @@ def endpointContext(function):
             ).setResponse()
         
         except Exception as e:
-            logger.writeLog(level="error", message=f'엔드포인트 에러: {e}')
+            logger.writeLog(level="error", message=endpointMessage["error"].format(error=e))
             code = e.code if hasattr(e, 'code') else 500
             message = e.message if hasattr(e, 'message') else "Internal Server Error"
 

@@ -8,6 +8,8 @@ from logging.handlers import TimedRotatingFileHandler
 from app.core.settings import settings
 from app.utils.file import checkAndCreateDir
 
+from app.constants.messages import loggerMessage
+
 class Logger:
     def __init__(self):
         try:
@@ -30,7 +32,7 @@ class Logger:
             if debug:
                 self.logger.addHandler(self._streamHandler())
         except Exception as e:
-            print(f"Logger 초기화 중 오류 발생: {e}")
+            print(loggerMessage["initError"].format(error=e))
 
     def _fileHandler(self) -> TimedRotatingFileHandler:
         checkAndCreateDir(self.filePath)
@@ -67,8 +69,8 @@ class Logger:
                 handler.flush()
                 handler.close()
                 self.logger.removeHandler(handler)
-            print("Logger 종료 완료")
+            print(loggerMessage["shutdownComplete"])
         except Exception as e:
-            print(f"Logger 종료 중 오류 발생: {e}")
+            print(loggerMessage["shutdownError"].format(error=e))
     
 logger = Logger()

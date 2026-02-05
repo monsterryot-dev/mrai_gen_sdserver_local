@@ -1,5 +1,7 @@
+"""
+google 상수 정의 모듈
+"""
 from typing import Literal
-from enum import Enum
 
 # google 
 defaultGooglePrefix = "google_image"

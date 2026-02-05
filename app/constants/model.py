@@ -1,3 +1,6 @@
+"""
+이미지 생성 모델 Enum 정의 모듈
+"""
 from enum import Enum
 
 class GoogleImagenModels(str, Enum):

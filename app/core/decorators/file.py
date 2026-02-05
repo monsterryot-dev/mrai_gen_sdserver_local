@@ -5,13 +5,15 @@ from contextlib import contextmanager
 
 from app.core.logger import logger
 
+from app.constants.messages import fileMessage
+
 @contextmanager
 def fileContext(filePath, mode):
     f = open(filePath, mode)
     try:
         yield f
     except Exception as e:
-        logger.writeLog("error", f"파일 오류: {e}")
+        logger.writeLog("error", fileMessage["error"].format(error=e))
     finally:
         f.close()
     

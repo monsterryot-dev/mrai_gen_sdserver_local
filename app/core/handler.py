@@ -7,7 +7,7 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.schemas.responses.handler import ExceptionHandlerResponse
 
-from app.constants.messages.handler import handlerMessage
+from app.constants.messages.handler import defaultMessage, handlerMessage
 
 def settingHandlers(app: FastAPI) -> FastAPI:
     @app.exception_handler(StarletteHTTPException)
@@ -16,7 +16,7 @@ def settingHandlers(app: FastAPI) -> FastAPI:
         handlerResponse = ExceptionHandlerResponse(
             code=code,
             result=False,
-            message=handlerMessage.get(code, "알 수 없는 오류가 발생했습니다.")
+            message=handlerMessage.get(code, defaultMessage)
         )
         return handlerResponse.setResponse()
     
@@ -26,7 +26,7 @@ def settingHandlers(app: FastAPI) -> FastAPI:
         handlerResponse = ExceptionHandlerResponse(
             code=code,
             result=False,
-            message=handlerMessage.get(code, "알 수 없는 오류가 발생했습니다.")
+            message=handlerMessage.get(code, defaultMessage)
         )
         return handlerResponse.setResponse()
     
@@ -36,7 +36,7 @@ def settingHandlers(app: FastAPI) -> FastAPI:
         handlerResponse = ExceptionHandlerResponse(
             code=code,
             result=False,
-            message="요청 데이터가 유효하지 않습니다.",
+            message=handlerMessage.get(code, defaultMessage),
             errors=exc.errors()
         )
         return handlerResponse.setResponse()
@@ -47,7 +47,7 @@ def settingHandlers(app: FastAPI) -> FastAPI:
         handlerResponse = ExceptionHandlerResponse(
             code=code,
             result=False,
-            message="요청 데이터가 유효하지 않습니다.",
+            message=handlerMessage.get(code, defaultMessage),
             errors=exc.errors()
         )
         return handlerResponse.setResponse()
