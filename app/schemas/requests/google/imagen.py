@@ -1,3 +1,6 @@
+"""
+google imagen 시크마 정의 모듈
+"""
 from fastapi import Form
 from typing import get_args
 from pydantic import BaseModel, Field, field_validator
@@ -10,7 +13,7 @@ from app.constants.google import (
     imagenPersonGenerationLiteral
 )
 
-class TextToImageRequestBasic(BaseModel):
+class ImagenRequestBasic(BaseModel):
     model:GoogleImagenModels = Field(
         ...,
         title="Imagen 모델명",
@@ -94,19 +97,19 @@ class TextToImageRequestBasic(BaseModel):
         raise ValueError(
             f"{validSizes}"
         )
-
-class TextToImageRequestPost(TextToImageRequestBasic):
+    
+class ImagenRequestPost(ImagenRequestBasic):
     @classmethod
     def asForm(
         cls,
-        model:str=Form(...),
-        prompt:str=Form(...),
-        numberOfImages:int = Form(1, ge=1, le=4),
-        imageSize:str = Form("1k"),
-        outputMimeType:str = Form("image/png"),
-        aspectRatio:str = Form("1:1"),
-        personGeneration:str = Form("allow_adult"),
-        guidanceScale:float = Form(7.5, ge=1.0, le=20.0)
+        model: str = Form(...),
+        prompt: str = Form(...),
+        numberOfImages: int = Form(1),
+        imageSize: str = Form("1k"),
+        outputMimeType: str = Form("image/png"),
+        aspectRatio: str = Form("1:1"),
+        personGeneration: str = Form("allow_adult"),
+        guidanceScale: float = Form(7.5),
     ):
         return cls(
             model=model,
@@ -116,5 +119,5 @@ class TextToImageRequestPost(TextToImageRequestBasic):
             outputMimeType=outputMimeType,
             aspectRatio=aspectRatio,
             personGeneration=personGeneration,
-            guidanceScale=guidanceScale
+            guidanceScale=guidanceScale,
         )

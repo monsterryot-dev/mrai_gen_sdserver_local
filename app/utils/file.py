@@ -9,3 +9,28 @@ def checkAndCreateDir(directoryPath: str):
     """
     if not os.path.exists(directoryPath):
         os.makedirs(directoryPath)
+
+def makeFileName(
+        prefix: str, 
+        extension: str, 
+        idx:int=None,
+        timestamp:str=None
+    ) -> str:
+    """
+    파일 이름 생성
+    """
+    extension = extension.lower()
+    fileName = prefix
+
+    suffixes = [value for value in (idx, timestamp) if value is not None]
+    if suffixes:
+        fileName += "_" + "_".join(str(value) for value in suffixes)
+    
+    return f"{fileName}.{extension}"
+
+def getFileExtension(fileName: str) -> str:
+    """
+    파일 이름에서 확장자 추출
+    """
+    return os.path.splitext(fileName)[1][1:].lower()  # 점(.) 제거
+

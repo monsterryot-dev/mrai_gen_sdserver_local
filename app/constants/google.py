@@ -9,7 +9,7 @@ defaultGoogleFormat = "png"
 
 # imagen
 imagenTokenCountModel = "models/gemini-2.0-flash"
-imagenInputTokenLimit = 480
+imagenTokenLimit = 480
 imagenImageNamePrefix = "generated_imagen"
 
 imagenImageSizeLiteral = Literal["1k", "2k"]
