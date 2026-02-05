@@ -11,7 +11,7 @@ from typing import Any, Optional
 from app.core.settings import settings
 from app.utils.file import checkAndCreateDir
 
-from app.constants.google import DEFAULTPREFIX, DEFAULTFORMAT
+from app.constants.google import defaultGooglePrefix, defaultGoogleFormat
 
 class GoogleApiClient:
     def __init__(self):
@@ -101,8 +101,8 @@ class GoogleApiClient:
     def setFileName(
             self, 
             idx: int = None, 
-            prefix: str = DEFAULTPREFIX, 
-            format: str = DEFAULTFORMAT
+            prefix: str = defaultGooglePrefix, 
+            format: str = defaultGoogleFormat
         ) -> str:
         now = datetime.datetime.now()
         timestamp = now.strftime("%Y%m%d_%H%M%S")

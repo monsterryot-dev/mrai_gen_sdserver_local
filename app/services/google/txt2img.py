@@ -9,7 +9,12 @@ from google.genai import types
 from app.services.google.client import GoogleApiClient
 from app.schemas.requests.google.txt2img import TextToImageRequestPost
 
-from app.constants.google import DEFAULTSAFEERRORMESSAGE, IMAGENTOKENFINDMODEL, IMAGENINPUTTOKENLIMIT, IMAGENNAMEPREFIX
+from app.constants.messages.google import errorMessages
+from app.constants.google import (
+    imagenTokenCountModel, 
+    imagenInputTokenLimit, 
+    imagenImageNamePrefix
+)
 
 class GoogleTxt2ImgService(GoogleApiClient):
     def __init__(self):
@@ -29,7 +34,7 @@ class GoogleTxt2ImgService(GoogleApiClient):
             config=params["config"],
         )
 
-        result = self.setImageResult(clientResponse, IMAGENNAMEPREFIX)
+        result = self.setImageResult(clientResponse, imagenImageNamePrefix)
 
         return result
     
@@ -42,12 +47,12 @@ class GoogleTxt2ImgService(GoogleApiClient):
         # INFO: 현재는 Imagen v4를 지원하지 않아서 gemini-2.0-flash 모델로 계산함
         prompt = requestBody.prompt
         tokenInfo = self.getCountToken(
-            model=IMAGENTOKENFINDMODEL,
+            model=imagenTokenCountModel,
             contents=prompt
         )
 
-        if int(tokenInfo['totalToken']) > IMAGENINPUTTOKENLIMIT:
-            raise Exception(f"프롬프트가 너무 깁니다. {IMAGENINPUTTOKENLIMIT} 토큰 이하로 줄여주세요.")
+        if int(tokenInfo['totalToken']) > imagenInputTokenLimit:
+            raise Exception(errorMessages["promptTokenLimitError"].format(tokenLimit=imagenInputTokenLimit))
 
         config = types.GenerateImagesConfig(
             number_of_images=requestBody.numberOfImages,
@@ -67,13 +72,13 @@ class GoogleTxt2ImgService(GoogleApiClient):
     def setImageResult(
             self, 
             response: types.GenerateImagesResponse, 
-            fileNamePrefix: str = IMAGENNAMEPREFIX
+            fileNamePrefix: str = imagenImageNamePrefix
         ) -> list[str]:
         
         if not response.generated_images:
             return {
                 "imageList": [], 
-                "message": DEFAULTSAFEERRORMESSAGE
+                "message": errorMessages["safeError"]
             }
 
         images = response.generated_images
@@ -87,7 +92,7 @@ class GoogleTxt2ImgService(GoogleApiClient):
     def saveImage(
             self, 
             images: list[Image.Image], 
-            fileNamePrefix: str = IMAGENNAMEPREFIX
+            fileNamePrefix: str = imagenImageNamePrefix
         ) -> dict[str, list[str]]: 
             saveImagePath = []
             for idx, imageData in enumerate(images):

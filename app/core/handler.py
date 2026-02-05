@@ -7,7 +7,7 @@ from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from app.schemas.responses.handler import ExceptionHandlerResponse
 
-from app.constants.handler import handlerMessage
+from app.constants.messages.handler import handlerMessage
 
 def settingHandlers(app: FastAPI) -> FastAPI:
     @app.exception_handler(StarletteHTTPException)

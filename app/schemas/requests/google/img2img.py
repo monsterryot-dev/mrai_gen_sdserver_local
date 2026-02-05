@@ -3,7 +3,7 @@ from fastapi import Form, File, UploadFile
 from pydantic import BaseModel, Field, field_validator
 
 from app.constants.model import GoogleNanoBananaModels
-from app.constants.google import CONTENTIMAGESIZE, CONTENTASPECTRATIO
+from app.constants.google import contentAspectRatioLiteral, contentImageSizeLiteral
 
 class ImageToImageRequestBasie(BaseModel):
     model:GoogleNanoBananaModels = Field(
@@ -42,12 +42,12 @@ class ImageToImageRequestBasie(BaseModel):
         title="랜덤 시드 값",
         description="이미지 생성 시 사용할 랜덤 시드 값 (0~4294967295 사이의 정수, None일 경우 무작위 시드 사용)",
     )
-    aspectRatio:CONTENTASPECTRATIO = Field(
+    aspectRatio:contentAspectRatioLiteral = Field(
         "1:1",
         title="이미지 가로세로 비율",
         description="생성할 이미지의 가로세로 비율 (가능한 값: 1:1, 2:3, 3:2, 3:4, 4:3, 4:5, 5:4, 9:16, 16:9, 21:9)",
     )
-    imageSize:CONTENTIMAGESIZE = Field(
+    imageSize:contentImageSizeLiteral = Field(
         "1k",
         title="이미지 크기 [nano banana pro만 지원]",
         description="생성할 이미지의 크기 (가능한 값: 1k, 2k, 4k)",
@@ -90,7 +90,7 @@ class ImageToImageRequestBasie(BaseModel):
     def validateImageSize(cls, v):
         v = v.lower().strip()
 
-        validSizes = get_args(CONTENTIMAGESIZE)
+        validSizes = get_args(contentImageSizeLiteral)
         if v in validSizes:
             return v
 

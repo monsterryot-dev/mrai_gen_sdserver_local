@@ -4,7 +4,7 @@
 from fastapi.responses import JSONResponse
 from typing import Optional, List, Dict, Any
 
-from app.constants.handler import validationMessage
+from app.constants.messages.handler import validationMessage
 
 class ExceptionHandlerResponse:
     def __init__(

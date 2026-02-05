@@ -3,7 +3,12 @@ from typing import get_args
 from pydantic import BaseModel, Field, field_validator
 
 from app.constants.model import GoogleImagenModels
-from app.constants.google import IMAGESIZE, OUTPUTMIMETYPE, ASPECTRATIO, PERSONGENERATION
+from app.constants.google import (
+    imagenImageSizeLiteral, 
+    imagenOutputMimeTypeLiteral, 
+    imagenAspectRatioLiteral, 
+    imagenPersonGenerationLiteral
+)
 
 class TextToImageRequestBasic(BaseModel):
     model:GoogleImagenModels = Field(
@@ -23,22 +28,22 @@ class TextToImageRequestBasic(BaseModel):
         title="생성할 이미지 수",
         description="생성할 이미지의 개수 (범위: 1~4)",
     )
-    imageSize:IMAGESIZE = Field(
+    imageSize:imagenImageSizeLiteral = Field(
         "1k",
         title="이미지 크기",
         description="생성할 이미지의 크기 (가능한 값: 1k, 2k)",
     )
-    outputMimeType:OUTPUTMIMETYPE = Field(
+    outputMimeType:imagenOutputMimeTypeLiteral = Field(
         "image/png",
         title="출력 이미지 MIME 타입",
         description="생성할 이미지의 MIME 타입 (가능한 값: image/png, image/jpeg)",
     )
-    aspectRatio:ASPECTRATIO = Field(
+    aspectRatio:imagenAspectRatioLiteral = Field(
         "1:1",
         title="이미지 가로세로 비율",
         description="생성할 이미지의 가로세로 비율 (가능한 값: 1:1, 3:4, 4:3, 16:9, 9:16)",
     )
-    personGeneration:PERSONGENERATION = Field(
+    personGeneration:imagenPersonGenerationLiteral = Field(
         "allow_adult",
         title="사람 생성 옵션",
         description="이미지 내 사람 생성 옵션 (가능한 값: dont_allow, allow_adult, allow_all)",
@@ -82,7 +87,7 @@ class TextToImageRequestBasic(BaseModel):
     def validateImageSize(cls, v):
         v = v.lower().strip()
 
-        validSizes = get_args(IMAGESIZE)
+        validSizes = get_args(imagenImageSizeLiteral)
         if v in validSizes:
             return v
 

@@ -8,7 +8,8 @@ from google.genai import types
 from app.services.google.client import GoogleApiClient
 from app.schemas.requests.google.img2img import ImageToImageRequestPost
 
-from app.constants.google import DEFAULTSAFEERRORMESSAGE, CONTENTNAMERPREFIX
+from app.constants.google import contentImageNamePrefix
+from app.constants.messages.google import errorMessages
 
 class GoogleImg2ImgService(GoogleApiClient):
     def __init__(self, image: bytes):
@@ -29,7 +30,7 @@ class GoogleImg2ImgService(GoogleApiClient):
             config=params["config"],
         )
 
-        result = self.setImageResult(clientResponse, CONTENTNAMERPREFIX)
+        result = self.setImageResult(clientResponse, contentImageNamePrefix)
 
         return result
     
@@ -47,7 +48,7 @@ class GoogleImg2ImgService(GoogleApiClient):
         tokenLimitInfo = self.getModelMaxToken(model=model)
 
         if tokenInfo['totalToken'] > tokenLimitInfo['inputTokenLimit']:
-            raise Exception(f"프롬프트가 너무 깁니다. {tokenLimitInfo['inputTokenLimit']} 토큰 이하로 줄여주세요.")
+            raise Exception(errorMessages["promptTokenLimitError"].format(tokenLimit=tokenLimitInfo['inputTokenLimit']))
 
         imageConfig=types.ImageConfig(
             aspect_ratio=requestBody.aspectRatio,
@@ -71,7 +72,7 @@ class GoogleImg2ImgService(GoogleApiClient):
     def setImageResult(
             self, 
             response: types.GenerateContentResponse,
-            fileNamePrefix: str = CONTENTNAMERPREFIX
+            fileNamePrefix: str = contentImageNamePrefix
         ) -> list[str]:
 
         partList = []
@@ -79,7 +80,7 @@ class GoogleImg2ImgService(GoogleApiClient):
         if not response.candidates:
             return {
                 "partList": [], 
-                "message": DEFAULTSAFEERRORMESSAGE
+                "message": errorMessages["safeError"]
             }
      
         for part in response.parts:
@@ -102,7 +103,7 @@ class GoogleImg2ImgService(GoogleApiClient):
     def saveImage(
         self,
         imageData: Image.Image,
-        fileNamePrefix: str = CONTENTNAMERPREFIX
+        fileNamePrefix: str = contentImageNamePrefix
     ) -> str:
         format = self.getImageFormat(imageData)
         fileName = self.setFileName(prefix=fileNamePrefix, idx=0, format=format)
