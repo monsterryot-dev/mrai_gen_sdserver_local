@@ -38,8 +38,8 @@ class ExceptionHandlerResponse:
         """ValidationError를 사용자 친화적인 형식으로 변환"""
         for error in self.errors:
             errorType = error.get("type", "")
-            print( errorType)
-            key = error.get("loc", [""])[-1]
+            loc = error.get("loc") or []
+            key = loc[-1] if loc else ""
             ctx = error.get("ctx", {})
             message = self._errorMessageFormat(errorType, key=key, **ctx)
         return message
