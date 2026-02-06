@@ -6,3 +6,5 @@ from fastapi import APIRouter, Depends
 from app.core.decorators.exception import endpointContext
 
 geminiRouter = APIRouter()
+
+# @geminiRouter.post("")

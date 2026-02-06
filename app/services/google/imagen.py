@@ -6,7 +6,7 @@ from PIL import Image
 from datetime import datetime
 from google.genai import types
 from app.services.google.client import GoogleClient
-from app.utils.file import makeFileName
+from app.utils.file import makeFileName, getFirstFileInDir
 
 from app.schemas.requests.google.imagen import ImagenRequestPost
 
@@ -17,7 +17,27 @@ from app.constants.google import (
     imagenImageNamePrefix
 )
 
-def GoogleImagenService(request: ImagenRequestPost):
+def googleImagenTestService():
+    """
+    Google Imagen 테스트 서비스 함수
+    """
+    from app.core.settings import settings
+    imagePath = settings.imageFilePath
+
+    imageFile = getFirstFileInDir(
+        directoryPath=imagePath,
+        extensions=["*.png", "*.jpg", "*.jpeg"]
+    )
+    
+    if imageFile is None:
+        return {
+            "imageList": [], 
+            "message": errorMessages["noImageError"].format(imagePath=imagePath, extension="png/jpg/jpeg")
+        }
+    else:
+        return  {"imageList": [imageFile]}
+
+def googleImagenService(request: ImagenRequestPost):
     """
     Google Imagen 서비스 생성 함수
     """

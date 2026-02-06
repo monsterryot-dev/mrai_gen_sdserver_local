@@ -14,6 +14,11 @@ from app.constants.google import (
 )
 
 class ImagenRequestBasic(BaseModel):
+    test:bool = Field(
+        False,
+        title="테스트 모드",
+        description="테스트 모드 활성화 여부"
+    )
     model:GoogleImagenModels = Field(
         ...,
         title="Imagen 모델명",
@@ -102,6 +107,7 @@ class ImagenRequestPost(ImagenRequestBasic):
     @classmethod
     def asForm(
         cls,
+        test: bool = Form(False),
         model: str = Form(...),
         prompt: str = Form(...),
         numberOfImages: int = Form(1, ge=1, le=4),
@@ -112,6 +118,7 @@ class ImagenRequestPost(ImagenRequestBasic):
         guidanceScale: float = Form(7.5, ge=1.0, le=30.0),
     ):
         return cls(
+            test=test,
             model=model,
             prompt=prompt,
             numberOfImages=numberOfImages,
