@@ -129,4 +129,3 @@ class GoogleGeminiGenerateImg2Img(GoogleGeminiGenerateBasic):
     """
     def __init__(self):
         super().__init__()
-    
