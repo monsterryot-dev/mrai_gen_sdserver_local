@@ -89,7 +89,7 @@ class GoogleClient:
         
         return 0
     
-    def setApiPrams(self, request:any) -> dict[str, any]:
+    def setApiParams(self, request:any) -> dict[str, any]:
         """
         자식 클래스에서 오버라이드하여 API 호출에 필요한 파라미터 설정
         """

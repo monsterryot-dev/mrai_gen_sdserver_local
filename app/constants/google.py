@@ -19,6 +19,7 @@ imagenPersonGenerationLiteral = Literal["dont_allow", "allow_adult", "allow_all"
     
 # gemini
 geminiImageNamePrefix = "generated_gemini"
+geminiImageExtension = "png"
 
 geminiGenTypeLiteral = Literal["txt2img", "img2img"]
 geminiImageSizeLiteral = Literal["1k", "2k", "4k"]

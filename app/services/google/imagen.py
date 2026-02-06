@@ -5,6 +5,7 @@ import os
 from PIL import Image
 from datetime import datetime
 from google.genai import types
+
 from app.services.google.client import GoogleClient
 from app.utils.file import makeFileName, getFirstFileInDir
 
@@ -43,9 +44,9 @@ def googleImagenService(request: ImagenRequestPost):
     """
     service = GoogleImagen()
 
-    prams = service.setApiPrams(request)
+    params = service.setApiParams(request)
 
-    response = service.runApi(prams)
+    response = service.runApi(params)
 
     result = service.setResult(response)
 
@@ -58,7 +59,7 @@ class GoogleImagen(GoogleClient):
     def __init__(self):
         super().__init__()
 
-    def setApiPrams(self, request: ImagenRequestPost) -> dict[str, any]:
+    def setApiParams(self, request: ImagenRequestPost) -> dict[str, any]:
         model = request.model
         prompt = request.prompt
 
