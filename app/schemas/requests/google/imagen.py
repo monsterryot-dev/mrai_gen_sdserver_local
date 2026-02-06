@@ -104,12 +104,12 @@ class ImagenRequestPost(ImagenRequestBasic):
         cls,
         model: str = Form(...),
         prompt: str = Form(...),
-        numberOfImages: int = Form(1),
+        numberOfImages: int = Form(1, ge=1, le=4),
         imageSize: str = Form("1k"),
         outputMimeType: str = Form("image/png"),
         aspectRatio: str = Form("1:1"),
         personGeneration: str = Form("allow_adult"),
-        guidanceScale: float = Form(7.5),
+        guidanceScale: float = Form(7.5, ge=1.0, le=30.0),
     ):
         return cls(
             model=model,

@@ -1,31 +1,48 @@
 """
 Google Imagen 서비스 모듈
 """
+import os
+from PIL import Image
+from datetime import datetime
 from google.genai import types
 from app.services.google.client import GoogleClient
+from app.utils.file import makeFileName
 
 from app.schemas.requests.google.imagen import ImagenRequestPost
 
 from app.constants.messages.google import errorMessages
 from app.constants.google import (
     imagenTokenCountModel, 
-    imagenTokenLimit
+    imagenTokenLimit,
+    imagenImageNamePrefix
 )
 
-class GoogleImagenService(GoogleClient):
-    def __init__(self, requestBody: ImagenRequestPost):
-        super().__init__(requestBody)
+def GoogleImagenService(request: ImagenRequestPost):
+    """
+    Google Imagen 서비스 생성 함수
+    """
+    service = GoogleImagen()
 
-    def setApiPrams(self) -> dict[str, any]:
-        if self.request is None:
-            raise Exception(errorMessages["initError"].format(value="request"))
-    
-        request = self.request
+    prams = service.setApiPrams(request)
 
+    response = service.runApi(prams)
+
+    result = service.setResult(response)
+
+    return result
+
+class GoogleImagen(GoogleClient):
+    """
+    Google Imagen 서비스 클래스
+    """
+    def __init__(self):
+        super().__init__()
+
+    def setApiPrams(self, request: ImagenRequestPost) -> dict[str, any]:
         model = request.model
         prompt = request.prompt
 
-        promptToken = self.getCountToken(model=imagenTokenCountModel, contents=prompt)
+        promptToken = self.countTokens(model=imagenTokenCountModel, contents=prompt)['totalTokens']
         if promptToken > imagenTokenLimit:
             raise Exception(errorMessages["promptTokenLimitError"].format(tokenLimit=imagenTokenLimit))
 
@@ -43,3 +60,47 @@ class GoogleImagenService(GoogleClient):
             "prompt": prompt,
             "config": config,
         }
+    
+    def runApi(self, parameters:dict[str, any]) -> types.GenerateImagesResponse:
+        self.checkClient()
+
+        clientResponse  = self.client.models.generate_images(
+            model=parameters["model"],
+            prompt=parameters["prompt"],
+            config=parameters["config"],
+        )
+        
+        return clientResponse
+    
+    def setResult(self, response: types.GenerateImagesResponse) -> dict[str, list[str]]:
+        images = getattr(response, "generated_images", None)
+        if not images:
+            return {
+                "imageList": [], 
+                "message": errorMessages["noImageError"]
+            }
+
+        return {
+            "imageList": self.setResultImage(images)
+        }
+    
+    def setResultImage(self, images:list[types.GeneratedImage]) -> list[str]:
+        returnList = []
+        now = datetime.now()
+        timestamp = now.strftime("%Y%m%d%H%M%S")
+        for idx, image in enumerate(images):
+            if not isinstance(image, Image.Image):
+                image = image.image
+            extension = image.mime_type.split('/')[-1]
+            fileName = makeFileName(
+                prefix=imagenImageNamePrefix,
+                idx=idx,
+                extension=extension,
+                timestamp=timestamp
+            )
+            filePath = os.path.join(self.filePath, fileName)
+
+            image.save(filePath)
+            returnList.append(filePath)
+
+        return returnList

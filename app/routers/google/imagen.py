@@ -14,6 +14,5 @@ imagenRouter = APIRouter()
 @imagenRouter.post("/")
 @endpointContext
 async def generateGoogleImagen(request: ImagenRequestPost = Depends(ImagenRequestPost.asForm)):
-    service = GoogleImagenService(request)
-
-    return {"message": "Google Imagen endpoint"}
+    result = GoogleImagenService(request)
+    return result

@@ -18,11 +18,10 @@ class GoogleClient:
         self.__apiKey: str = settings.googleapikey
         self.filePath: str = settings.imageFilePath
         self.client: genai.Client = None
-        self.request: Optional[any] = requestBody
         
         checkAndCreateDir(self.filePath)
 
-    def __setGoogleClient(self) -> genai.Client:
+    def __setGoogleClient(self) -> None:
         try:
             self.client = genai.Client(
                 api_key=self.__apiKey,
@@ -71,8 +70,12 @@ class GoogleClient:
         tokenCount = self.client.models.count_tokens(
             model=model,
             contents=contents
-        )
-        return tokenCount.__dict__
+        ).__dict__
+
+        return {
+            "totalTokens": tokenCount.get("total_tokens", 0),
+            "cachedContentTokenCount": tokenCount.get("cached_content_token_count", 0),
+        }
     
     def getTokenLimit(self, model:str) -> int:
         """
@@ -86,25 +89,25 @@ class GoogleClient:
         
         return 0
     
-    def setApiPrams(self) -> any:
+    def setApiPrams(self, request:any) -> dict[str, any]:
         """
         자식 클래스에서 오버라이드하여 API 호출에 필요한 파라미터 설정
         """
         pass
 
-    def runApi(self) -> any:
+    def runApi(self, parameters:dict[str, any]) -> any:
         """
         자식 클래스에서 오버라이드하여 API 호출 실행
         """
         pass
 
-    def setResult(self, response:any) -> any:
+    def setResult(self, response:any) -> dict[str, any]:
         """
         자식 클래스에서 오버라이드하여 API 호출 결과 설정
         """
         pass
 
-    def setResultImage(self, image:any) -> list[str]:
+    def setResultImage(self, images:any) -> list[str]:
         """
         자식 클래스에서 오버라이드하여 이미지 결과 저장 및 반환
         """

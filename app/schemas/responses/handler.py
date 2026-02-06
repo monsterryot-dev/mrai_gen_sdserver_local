@@ -4,7 +4,7 @@
 from fastapi.responses import JSONResponse
 from typing import Optional, List, Dict, Any
 
-from app.constants.messages.handler import validationMessage
+from app.constants.messages.handler import defaultMessage, validationMessage
 
 class ExceptionHandlerResponse:
     def __init__(
@@ -25,7 +25,7 @@ class ExceptionHandlerResponse:
             "result": self.result,
             "code": self.code,
             "data": {
-                "message": message if not self.errors else self._formatErrors(message)
+                "message": message if not self.errors else self._formatErrors()
             }
         }
         
@@ -34,16 +34,20 @@ class ExceptionHandlerResponse:
             content=content
         )
 
-    def _formatErrors(self, defulatMessage:str) -> List[Dict[str, Any]]:
+    def _formatErrors(self) -> List[Dict[str, Any]]:
         """ValidationError를 사용자 친화적인 형식으로 변환"""
         for error in self.errors:
             errorType = error.get("type", "")
+            print( errorType)
             key = error.get("loc", [""])[-1]
-            allowed = error.get("ctx", {}).get("error", [])
-            message = self._errorMessageFormat(errorType, key=key, allowed=allowed)
+            ctx = error.get("ctx", {})
+            message = self._errorMessageFormat(errorType, key=key, **ctx)
         return message
     
     def _errorMessageFormat(self, type:str, **kwargs) -> str:
         """오류 메시지 포맷팅"""
-        message = validationMessage[type].format(**kwargs)
-        return message
+        template = validationMessage.get(type, defaultMessage)
+        try:
+            return template.format(**kwargs)
+        except Exception:
+            return defaultMessage

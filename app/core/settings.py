@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     appName: str = "mrai_gen_sdserver_local"
     appVersion: str = "1.2.0"
 
-    googleTimeout: int = 120 * 1000 # milliseconds [120초]
+    googleTimeout: int = 60 * 1000 # milliseconds [60초]
 
     # BUILD: 실제 배포 시에는 False로 변경 필요
     debug: bool = True

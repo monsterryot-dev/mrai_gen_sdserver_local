@@ -14,5 +14,11 @@ handlerMessage = {
 
 validationMessage = {
     "missing": "필수 입력 {key}이(가) 누락되었습니다.",
-    "value_error": "입력 받은 값 {key}이(가) 잘못된 값입니다. [사용 가능한 값: {allowed}]"
+    "int_parsing": "입력 받은 값 {key}이(가) 정수만 허용됩니다.",
+    "literal_error": "입력 받은 값 {key}이(가) 올바르지 않습니다.[사용 가능한 값: {expected}]",
+    "value_error": "입력 받은 값 {key}이(가) 잘못된 값입니다. [사용 가능한 값: {error}]",
+    "greater_than_equal": "입력 받은 값 {key}이(가) {ge} 이상이어야 합니다.",
+    "greater_than": "입력 받은 값 {key}이(가) {gt} 초과이어야 합니다.",
+    "less_than_equal": "입력 받은 값 {key}이(가) {le} 이하이어야 합니다.",
+    "less_than": "입력 받은 값 {key}이(가) {lt} 미만이어야 합니다.",
 }
